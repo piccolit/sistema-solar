@@ -87,6 +87,7 @@ vector<float> calcularFuerzaGravitatoria(cuerpo cuerpo1, cuerpo cuerpo2){
 
 void calcularAceleracion(cuerpo & cuerpo1, vector<cuerpo> & sistema){
     // Post: devuelve un vector con la aceleracion del cuerpo dado segun la atraccion gravitatoria sufrida a partir de los demas cuerpos del sistema.
+    // Las fuerzas que se le pasen son para el siguiente t.
     
         if(sistema.size() < 2){
         cout << "Error, no se puede calcular aceleracion si el cuerpo no esta en un sistema de al menos dos entidades." << endl;
@@ -97,9 +98,9 @@ void calcularAceleracion(cuerpo & cuerpo1, vector<cuerpo> & sistema){
     
     for(int i=0; i<sistema.size(); i++){
         if(sonDistintos(sistema[i], cuerpo1)){
-            aceleracion[0] = aceleracion[0] + ((calcularFuerzaGravitatoria(sistema[i], cuerpo1)[0])/cuerpo1.masa);
-            aceleracion[1] = aceleracion[1] + ((calcularFuerzaGravitatoria(sistema[i], cuerpo1)[1])/cuerpo1.masa);
-            aceleracion[2] = aceleracion[2] + ((calcularFuerzaGravitatoria(sistema[i], cuerpo1)[2])/cuerpo1.masa);
+            aceleracion[0] = (calcularFuerzaGravitatoria(sistema[i], cuerpo1)[0])/cuerpo1.masa;
+            aceleracion[1] = (calcularFuerzaGravitatoria(sistema[i], cuerpo1)[1])/cuerpo1.masa;
+            aceleracion[2] = (calcularFuerzaGravitatoria(sistema[i], cuerpo1)[2])/cuerpo1.masa;
         }
             
     }
@@ -171,3 +172,4 @@ int main(){
 
 
 }
+
