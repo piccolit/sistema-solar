@@ -7,6 +7,7 @@ using namespace std;
 
 struct cuerpo{
 
+    string id;
     unsigned int masa;      //kg
     unsigned int radio;     // km
     //vectores de 3 elementos: uno por cada coo. en el espacio (x,y,z)
@@ -15,27 +16,52 @@ struct cuerpo{
     vector<float> aceleracion;   //
 };
 
+//Se carga la base de datos de cuerpos celestes, por cada carga se agrega un cuerpo celeste mas
+void cargarCuerpoCeleste(string id, unsigned int masa, unsigned int radio, float xInicial, float yInicial, float zInicial, float velocidadX, float velocidadY, float velocidadZ, vector<cuerpo> sistema){
+
+    cuerpo nuevoCuerpo;
+
+    nuevoCuerpo.id = id;
+    nuevoCuerpo.masa = masa;
+    nuevoCuerpo.radio = radio;
+    
+    nuevoCuerpo.posicion[0] = xInicial;
+    nuevoCuerpo.posicion[1] = yInicial;
+    nuevoCuerpo.posicion[2] = zInicial;
+
+    nuevoCuerpo.velocidad[0] = velocidadX;
+    nuevoCuerpo.velocidad[1] = velocidadY;
+    nuevoCuerpo.velocidad[2] = velocidadZ;
+
+    sistema.push_back(nuevoCuerpo);
+}
+
+
+bool mismaPosicion(cuerpo cuerpo1, cuerpo cuerpo2){
+    // Post: devuelve true si los dos cuerpos estan en la misma posicion
+
+    if(cuerpo1.posicion[0] == cuerpo2.posicion[0] && cuerpo1.posicion[1] == cuerpo2.posicion[1] && cuerpo1.posicion[2] == cuerpo2.posicion[2])
+        return true;
+    else
+        return false;
+}
+
 
 bool sonDistintos(const cuerpo & cuerpo1, const cuerpo & cuerpo2){ 
     // Post: devuelve false si dos cuerpos tienen distinta masa, radio y posicion
 
     bool masa = cuerpo1.masa == cuerpo2.masa;
     bool radio = cuerpo1.radio == cuerpo2.radio;
-    
-    bool posicionX = cuerpo1.posicion[0] == cuerpo2.posicion[0];
-    bool posicionY = cuerpo1.posicion[1] == cuerpo2.posicion[1];
-    bool posicionZ = cuerpo1.posicion[2] == cuerpo2.posicion[2];
 
-    //true <-> es igual en todos las coordenadas
-    bool posicion = posicionX && posicionY && posicionZ;
-
-    return !(posicion || masa || radio);
+    return !(mismaPosicion(cuerpo1, cuerpo2) && masa && radio);
 }
 
 
-//Recibe dos cuerpos, devuelve un vector<float> con la fuerza gravitatoria que sufren los dos en
-// cada una de sus coordenadas X,Y,Z (cooFuerzas[0],cooFuerzas[1] y cooFuerzas[2] respectivamente)
+
 vector<float> calcularFuerzaGravitatoria(cuerpo cuerpo1, cuerpo cuerpo2){
+
+    //Recibe dos cuerpos, devuelve un vector<float> con la fuerza gravitatoria que sufren los dos en
+    //cada una de sus coordenadas X,Y,Z (cooFuerzas[0],cooFuerzas[1] y cooFuerzas[2] respectivamente)
 
     vector<float> cooFuerzas(3);
     float fuerzaTotal, distanciaTotal, dx, dy, dz, fuerzaX, fuerzaY, fuerzaZ;
@@ -56,18 +82,44 @@ vector<float> calcularFuerzaGravitatoria(cuerpo cuerpo1, cuerpo cuerpo2){
 
 
 
-vector<float> sumatoriaFuerzas(vector<cuerpo> sistema, cuerpo cuerpo){
+vector<float> sumatoriaFuerzas(cuerpo cuerpo1, vector<cuerpo> sistema){
     // Post: devuelve un vector con la aceleracion del cuerpo dado segun los cuerpos del sistema.
     vector<float> aceleracion;
     
     for(int i=0; i<sistema.size(); i++){
-        if(sonDistintos(sistema[i], cuerpo)){
-            aceleracion[0] = aceleracion[0] + calcularFuerzaGravitatoria(sistema[i], cuerpo)[0];
-            aceleracion[1] = aceleracion[1] + calcularFuerzaGravitatoria(sistema[i], cuerpo)[1];
-            aceleracion[2] = aceleracion[2] + calcularFuerzaGravitatoria(sistema[i], cuerpo)[2];
+        if(sonDistintos(sistema[i], cuerpo1)){
+            aceleracion[0] = aceleracion[0] + calcularFuerzaGravitatoria(sistema[i], cuerpo1)[0];
+            aceleracion[1] = aceleracion[1] + calcularFuerzaGravitatoria(sistema[i], cuerpo1)[1];
+            aceleracion[2] = aceleracion[2] + calcularFuerzaGravitatoria(sistema[i], cuerpo1)[2];
         }
             
     }
 
 }
 
+
+
+
+vector<float> siguienteVelocidad(cuerpo cuerpo){
+
+    cuerpo.aceleracion = sumatoriaFuerzas(cuerpo, vectorCuerpos);
+
+
+    return velocidad_siguiente_t;
+}
+
+//La funcion principal. Actualiza el estado de un cuerpo por cada frame, cada frame senializa un t++.
+void actualizarEstado(cuerpo cuerpo){
+
+
+
+}
+
+int main(){
+
+    vector<cuerpo> sistema = {};
+
+    cargarCuerpoCeleste();
+
+    return 0;
+}
